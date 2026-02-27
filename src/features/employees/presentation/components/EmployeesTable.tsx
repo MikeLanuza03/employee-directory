@@ -25,12 +25,17 @@ const columns = [
       const status = info.getValue();
       return (
         <span
-          className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${
+          className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-medium ${
             status === "active"
               ? "bg-green-100 text-green-700"
-              : "bg-gray-100 text-gray-500"
+              : "bg-red-100 text-red-700"
           }`}
         >
+          <span
+            className={`inline-block h-1.5 w-1.5 rounded-full ${
+              status === "active" ? "bg-green-500" : "bg-red-500"
+            }`}
+          />
           {status}
         </span>
       );
@@ -40,9 +45,10 @@ const columns = [
 
 interface EmployeesTableProps {
   employees: Employee[];
+  onSelectEmployee?: (id: number) => void;
 }
 
-export default function EmployeesTable({ employees }: EmployeesTableProps) {
+export default function EmployeesTable({ employees, onSelectEmployee }: EmployeesTableProps) {
   const table = useReactTable({
     data: employees,
     columns,
@@ -71,7 +77,11 @@ export default function EmployeesTable({ employees }: EmployeesTableProps) {
         </thead>
         <tbody className="divide-y divide-gray-200 bg-white">
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id} className="hover:bg-gray-50">
+            <tr
+              key={row.id}
+              className={`hover:bg-gray-50 ${onSelectEmployee ? "cursor-pointer" : ""}`}
+              onClick={() => onSelectEmployee?.(row.original.id)}
+            >
               {row.getVisibleCells().map((cell) => (
                 <td key={cell.id} className="whitespace-nowrap px-6 py-4 text-sm text-gray-700">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
