@@ -10,6 +10,10 @@
 - Use React Hook Form + Zod for ALL forms
 - Shared components go in `src/shared/components/`
 
+## Documentation Lookup
+
+- Always use the context7 browser to check docs before implementing or modifying
+
 ## Mock API
 
 - JSON Server running on `http://localhost:3001`
