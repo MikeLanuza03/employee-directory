@@ -23,20 +23,21 @@ const columns = [
     header: "Status",
     cell: (info) => {
       const status = info.getValue();
+      const label = status.charAt(0).toUpperCase() + status.slice(1);
       return (
         <span
           className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-medium ${
             status === "active"
-              ? "bg-green-100 text-green-700"
-              : "bg-red-100 text-red-700"
+              ? "bg-green-100 text-green-800"
+              : "bg-gray-100 text-gray-600"
           }`}
         >
           <span
-            className={`inline-block h-1.5 w-1.5 rounded-full ${
-              status === "active" ? "bg-green-500" : "bg-red-500"
+            className={`inline-block h-2 w-2 rounded-full ${
+              status === "active" ? "bg-green-500" : "bg-gray-400"
             }`}
           />
-          {status}
+          {label}
         </span>
       );
     },
@@ -76,14 +77,31 @@ export default function EmployeesTable({ employees, onSelectEmployee }: Employee
           ))}
         </thead>
         <tbody className="divide-y divide-gray-200 bg-white">
+          {table.getRowModel().rows.length === 0 && (
+            <tr>
+              <td
+                colSpan={columns.length}
+                className="px-6 py-10 text-center text-sm text-gray-500"
+              >
+                No employees found.
+              </td>
+            </tr>
+          )}
           {table.getRowModel().rows.map((row) => (
             <tr
               key={row.id}
-              className={`hover:bg-gray-50 ${onSelectEmployee ? "cursor-pointer" : ""}`}
+              className={`even:bg-gray-50 hover:bg-gray-100 ${onSelectEmployee ? "cursor-pointer" : ""}`}
+              tabIndex={onSelectEmployee ? 0 : undefined}
               onClick={() => onSelectEmployee?.(row.original.id)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onSelectEmployee?.(row.original.id);
+                }
+              }}
             >
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className="whitespace-nowrap px-6 py-4 text-sm text-gray-700">
+                <td key={cell.id} className="px-6 py-4 text-sm text-gray-700">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}
